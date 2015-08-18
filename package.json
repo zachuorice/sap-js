@@ -1,0 +1,6 @@
+{
+    "name":"superaudioplayer",
+    "version":"skeleton",
+    "description":"A jquery plugin for creating interactive HTML5 audio players.",
+    "license":"MIT"
+}
