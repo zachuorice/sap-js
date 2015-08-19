@@ -1,6 +1,10 @@
 {
     "name":"superaudioplayer",
-    "version":"skeleton",
+    "version":"0.0.1",
     "description":"A jquery plugin for creating interactive HTML5 audio players.",
-    "license":"MIT"
+    "license":"MIT",
+    "author":"Zachary Richey <zr.public@gmail.com>",
+    "main":"sap",
+    "repository":{"type":"git", "url":"https://github.com/zachuorice/sap-js"},
+    "devDependencies":{"grunt":"*", "qunitjs":"*"}
 }
