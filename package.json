@@ -1,10 +1,19 @@
 {
-    "name":"superaudioplayer",
-    "version":"0.0.1",
-    "description":"A jquery plugin for creating interactive HTML5 audio players.",
-    "license":"MIT",
-    "author":"Zachary Richey <zr.public@gmail.com>",
-    "main":"sap",
-    "repository":{"type":"git", "url":"https://github.com/zachuorice/sap-js"},
-    "devDependencies":{"grunt":"*", "qunitjs":"*"}
+  "name": "superaudioplayer",
+  "version": "0.0.1",
+  "description": "A jquery plugin for creating interactive HTML5 audio players.",
+  "license": "MIT",
+  "author": "Zachary Richey <zr.public@gmail.com>",
+  "main": "sap",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zachuorice/sap-js"
+  },
+  "devDependencies": {
+    "grunt": "*",
+    "grunt-cli": "*",
+    "grunt-contrib-qunit": "^0.7.0",
+    "grunt-contrib-uglify": "^0.9.1",
+    "qunitjs": "*"
+  }
 }
