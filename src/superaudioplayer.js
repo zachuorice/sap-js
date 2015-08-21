@@ -22,7 +22,57 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 var saplayer = (function() {
+	// A single track of audio, and associated data.
+	var Track = function(audio, data) {
+		this.audio = audio;
+		this.data = data;
+	}
+
+	// Manages playback of a group of HTML5 audio objects.
+	var Playlist = function(tracks) {
+		this.tracks = tracks;
+        this.active_track = false;
+
+        this.Play = function() {
+            track_index = 0;
+            if(arguments.length > 0) {
+                track_index = arguments[0];
+            }
+            // NOTE: Don't type check the track_index, simply rely/handle invalid tracks[index].
+            return false;
+        }
+
+        this.Pause = function() {
+            return false;
+        }
+
+        this.IsPlaying = function() {
+            return false;
+        }
+
+        this.Seek = function(new_position) {
+            return false;
+        }
+
+        this.SeekAhead = function(steps) {
+            return false;
+        }
+
+        this.SeekBack = function(steps) {
+            return this.seekAhead(-steps);
+        }
+
+        this.TrackLength = function() {
+            return 0;
+        }
+	}
+	
+	var make_playlist_from_dom = function(dom) {
+		return new Playlist([]);
+	}
+
 	return {
+		MakePlaylistFromDOM:make_playlist
 	};
 })();
 

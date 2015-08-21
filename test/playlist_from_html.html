@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Test: Generation of SAP Playlist from Semantic HTML</title>
+		<link rel="stylesheet" href="../node_modules/qunitjs/qunit/qunit.css" media="screen">
+		<script src="../node_modules/qunitjs/qunit/qunit.js"></script>
+		<script src="../node_modules/jquery/dist/jquery.js"></script>
+		<script src="../src/superaudioplayer.js"></script>
+	</head>
+	<body>
+		<div id="qunit"></div>
+		<div id="qunit-fixture"></div>
+
+		<ol id="tracklist-input-t1" class="sap-playlist">
+		</ol>
+
+		<ol id="tracklist-input-t2" class="sap-playlist">
+			<li>
+				<span class="sap-playlist-track-title">Uno</span>
+				<audio class="sap-playlist-track-audio" controls="" src="foo.ogg">
+					Audio cannot be played.
+				</audio>
+			</li>
+			<li>
+				<span class="sap-playlist-track-title">Dos</span>
+				<audio class="sap-playlist-track-audio" controls="" src="foo.ogg">
+					Audio cannot be played.
+				</audio>
+			</li>	
+		</ol>
+
+		<ol id="tracklist-input-t3" class="sap-playlist">
+			<li>
+				<span class="sap-playlist-track-title">Uno</span>
+				<audio class="sap-playlist-track-audio" controls="" src="foo.ogg">
+					Audio cannot be played.
+				</audio>
+			</li>
+			<li>
+				<span class="sap-playlist-track-title">Dos</span>
+				<audio class="sap-playlist-track-audio" controls="" src="foo.ogg">
+					Audio cannot be played.
+				</audio>
+				<div class="sap-playlist-track-frame">
+					<p>Some cool extra information!</p>
+				</div>
+			</li>
+			<li>
+				<span class="sap-playlist-track-title">Tres</span>
+				<audio class="sap-playlist-track-audio" controls="" src="foo.ogg">
+					Audio cannot be played.
+				</audio>
+			</li>
+		</ol>
+		<script src="playlist_from_html.js"></script>
+	</body>
+</html>

@@ -10,10 +10,11 @@
     "url": "https://github.com/zachuorice/sap-js"
   },
   "devDependencies": {
-    "grunt": "*",
-    "grunt-cli": "*",
+    "grunt": "^0.4.5",
+    "grunt-cli": "^0.1.13",
     "grunt-contrib-qunit": "^0.7.0",
     "grunt-contrib-uglify": "^0.9.1",
-    "qunitjs": "*"
+    "jquery": "^2.1.4",
+    "qunitjs": "^1.18.0"
   }
 }

@@ -30,6 +30,7 @@ Ideally the plugin will take HTML like this:
 					About the track!
 				</div>
 			</li>
+		</ol>
 	</section>
 
 This HTML will be used as data for the audio player, ideally if Javascript is not available the audio tags would still work and this HTML block would be rendered. However that would require specifying the controls attribute on the audio tags for proper operation.
