@@ -72,7 +72,7 @@ var saplayer = (function() {
 	}
 
 	return {
-		MakePlaylistFromDOM:make_playlist
+		MakePlaylistFromDOM:make_playlist_from_dom
 	};
 })();
 

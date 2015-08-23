@@ -12,11 +12,23 @@ QUnit.test("Playlist Generation from Semantic HTML", function(assert) {
     assert.ok(t2.active_track === false, "t2 should have no active track");
     assert.ok(t3.active_track === false, "t3 should have no active track");
 
-    // Test Play().
-    assert.ok(t1.Play() === false, "t1.Play(): Returns false on no track to play");
-    assert.ok(t1.active_track === false, "t1.Play(): Shouldn't change active_track");
-    assert.ok(t2.Play(), "t2.Play(): Returns true with track to play");
-    assert.ok(t2.active_track === t2.tracks[0], "t2.Play(): Should set active track to first");
-    assert.ok(t3.Play(1), "t3.Play(1): Returns true with valid track index given");
-    assert.ok(t3.active_track === t3.tracks[1], "t3.Play(1): Should set active track to second");
+    // Check the track data is correct.
+    var titles = ["Uno", "Dos", "Tres"];
+    var extra_info = [false, "Some cool extra information!", false];
+    var audio_sources = ["uno.ogg", "dos.ogg", "tres.ogg"];
+
+    var test_tracks = function(tracks, tracks_name) {
+        tracks.forEach(function(track, index) {
+            var identifier = tracks_name + "." + index + ": ";
+            assert.ok(track.audio.src == audio_sources[index], identifier + "Audio src matches");
+            assert.ok(track.data.title == titles[index], identifier + "Audio title matches");
+            assert.ok(!track.data.extra || 
+                track.data.extra.text() == extra_info[index], 
+                identifier + "Extra data matches");
+        });
+    }
+
+    test_tracks(t1.tracks, "t1");
+    test_tracks(t2.tracks, "t2");
+    test_tracks(t3.tracks, "t3");
 });
