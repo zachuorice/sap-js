@@ -68,7 +68,20 @@ var saplayer = (function() {
 	}
 	
 	var make_playlist_from_dom = function(dom) {
-		return new Playlist([]);
+        var tracks = [];
+        $(dom).find("li").each(function(index) {
+            var audio = $(this).find("audio.sap-playlist-track-audio").first().clone(true);
+            var title = $(this).find("span.sap-playlist-track-title").text();
+            var extra = $(this).find("div.sap-playlist-track-frame").first();
+            if(extra.length > 0) {
+                extra = extra.clone();
+            }
+            else {
+                extra = false;
+            }
+            tracks.push(new Track(audio, {title:title, extra:extra}));
+        });
+		return new Playlist(tracks);
 	}
 
 	return {

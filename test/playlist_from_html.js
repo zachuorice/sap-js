@@ -14,17 +14,19 @@ QUnit.test("Playlist Generation from Semantic HTML", function(assert) {
 
     // Check the track data is correct.
     var titles = ["Uno", "Dos", "Tres"];
-    var extra_info = [false, "Some cool extra information!", false];
+    var extra_info = "Some cool extra information!";
     var audio_sources = ["uno.ogg", "dos.ogg", "tres.ogg"];
 
     var test_tracks = function(tracks, tracks_name) {
         tracks.forEach(function(track, index) {
             var identifier = tracks_name + "." + index + ": ";
-            assert.ok(track.audio.src == audio_sources[index], identifier + "Audio src matches");
-            assert.ok(track.data.title == titles[index], identifier + "Audio title matches");
-            assert.ok(!track.data.extra || 
-                track.data.extra.text() == extra_info[index], 
-                identifier + "Extra data matches");
+            assert.ok(track.audio.attr("src") == audio_sources[index], 
+                identifier + "Audio src matches (" + track.audio.attr("src") + ")");
+            assert.ok(track.data.title == titles[index], 
+                identifier + "Audio title matches (" + track.data.title + ")");
+            assert.ok(track.data.extra === false ||
+                track.data.extra.text() == extra_info, 
+                identifier + "Extra data matches (either: false or: " + extra_info + ")");
         });
     }
 
