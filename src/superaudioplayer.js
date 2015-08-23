@@ -31,46 +31,92 @@ var saplayer = (function() {
 	// Manages playback of a group of HTML5 audio objects.
 	var Playlist = function(tracks) {
 		this.tracks = tracks;
-        this.active_track = false;
+        this.activeTrack = false;
 
-        this.Play = function() {
-            track_index = 0;
+        this.play = function() {
+            trackIndex = 0;
             if(arguments.length > 0) {
-                track_index = arguments[0];
+                trackIndex = arguments[0];
             }
-            // NOTE: Don't type check the track_index, simply rely/handle invalid tracks[index].
+            var track = this.tracks[trackIndex];
+            if(track) {
+                this.activeTrack = track.get(0);
+                this.activeTrack.play();
+                return true;
+            }
             return false;
         }
 
-        this.Pause = function() {
+        this.pause = function() {
+            if(this.activeTrack) {
+                this.activeTrack.pause();
+                return true;
+            }
             return false;
         }
 
-        this.IsPlaying = function() {
+        this.stop = function() {
+            if(this.activeTrack) {
+                this.Pause();
+                this.Seek(0);
+                this.activeTrack = false;
+                return true;
+            }
             return false;
         }
 
-        this.Seek = function(new_position) {
+        this.isPlaying = function() {
+            if(this.activeTrack) {
+                return !this.activeTrack.paused;
+            }
             return false;
         }
 
-        this.SeekAhead = function(steps) {
+        this.seek = function(newSeconds) {
+            if(this.activeTrack) {
+                this.activeTrack.currentTime = newSeconds;
+                return true;
+            }
             return false;
         }
 
-        this.SeekBack = function(steps) {
-            return this.seekAhead(-steps);
+        this.seekAhead = function(seconds) {
+            if(this.activeTrack) {
+                this.activeTrack.currentTime += seconds;
+                return true;
+            }
+            return false;
         }
 
-        this.TrackLength = function() {
-            return 0;
+        this.seekBack = function(seconds) {
+            return this.seekAhead(-seconds);
+        }
+
+        this.currentTime = function() {
+            if(this.activeTrack) {
+                return this.activeTrack.currentTime;
+            }
+            return false;
+        }
+
+        this.trackLength = function() {
+            trackIndex = false;
+            if(arguments.length > 0) {
+                trackIndex = arguments[0];
+            }
+            if(!trackIndex && this.activeTrack) {
+                return this.activeTrack.duration;
+            } else if (trackIndex) {
+                return this.tracks[trackIndex].get(0).duration;
+            }
+            return false;
         }
 	}
 	
-	var make_playlist_from_dom = function(dom) {
+	var makePlaylistFromDOM = function(dom) {
         var tracks = [];
         $(dom).find("li").each(function(index) {
-            var audio = $(this).find("audio.sap-playlist-track-audio").first().clone(true);
+            var audio = $(this).find("audio.sap-playlist-track-audio").first();
             var title = $(this).find("span.sap-playlist-track-title").text();
             var extra = $(this).find("div.sap-playlist-track-frame").first();
             if(extra.length > 0) {
@@ -85,7 +131,7 @@ var saplayer = (function() {
 	}
 
 	return {
-		MakePlaylistFromDOM:make_playlist_from_dom
+		makePlaylistFromDOM:makePlaylistFromDOM
 	};
 })();
 
