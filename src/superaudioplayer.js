@@ -130,8 +130,21 @@ var saplayer = (function() {
 		return new Playlist(tracks);
 	}
 
+    // Create, setup, and return the DOM for the SAP Player controls.
+    //
+    // buttons: An array which will determine the order of and types of
+    // controls on the player. Values allowed in array: play, pause, stop, next, prev
+    var sapPlayer = function(playlist, buttons) {
+        if(buttons === undefined) {
+            buttons = ["play", "pause", "stop", "next", "prev"];
+        }
+        var root = $($.parseHTML('<div class="sap-controls"></div>')[0]);
+        return root;
+    }
+
 	return {
-		makePlaylistFromDOM:makePlaylistFromDOM
+		makePlaylistFromDOM:makePlaylistFromDOM,
+        sapPlayer:sapPlayer
 	};
 })();
 
