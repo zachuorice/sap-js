@@ -136,9 +136,19 @@ var saplayer = (function() {
     // controls on the player. Values allowed in array: play, pause, stop, next, prev
     var sapPlayer = function(playlist, buttons) {
         if(buttons === undefined) {
-            buttons = ["play", "pause", "stop", "next", "prev"];
+            buttons = ["play", "pause", "stop", "prev", "next"];
         }
         var root = $($.parseHTML('<div class="sap-controls"></div>')[0]);
+        var button_to_icon = {play:"fa-play", pause:"fa-pause", "stop":"fa-stop", 
+            "next":"fa-step-forward", "prev":"fa-step-backward"};
+
+        $.each(buttons, function(index) {
+            var button = $($.parseHTML('<button type="button" class="sap-control sap-' 
+                    + this + '"><i class="fa ' + 
+                    button_to_icon[this] + '"></i></button>'));
+            root.append(button);
+        });
+
         return root;
     }
 

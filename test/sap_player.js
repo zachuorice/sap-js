@@ -11,8 +11,14 @@ QUnit.test("SAP Player Tests", function(assert) {
     assert.ok(t2_dom.hasClass("sap-controls"), "Returned object should have class 'sap-controls'");
     assert.ok(t3_dom.hasClass("sap-controls"), "Returned object should have class 'sap-controls'");
 
-    // TODO Test for each expected element
-    
-    // TODO Trigger events on each element and check that changes reflected in Playlist (where possible)
-    //      ^ May have to add DOM objects to document for events to work, not sure.
+    assert.ok(t1_dom.find(".sap-play,.sap-pause,.sap-stop,.sap-next,.sap-prev").length == 5, 
+        "t1: All five controls should be present");
+    assert.ok(t1_dom.find(".sap-play,.sap-pause").length == 2, 
+        "t2: Two controls should be present");
+    assert.ok(t1_dom.find(".sap-pause,.sap-next,.sap-play").length == 3, 
+       "t3: Three controls should be present");   
+
+    $(".player-box").append(t1_dom);
+    $(".player-box").append(t2_dom);
+    $(".player-box").append(t3_dom);
 });
