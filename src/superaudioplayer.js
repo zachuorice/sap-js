@@ -33,26 +33,61 @@ var saplayer = (function() {
 		this.tracks = tracks;
         this.activeTrack = false;
 
-        this.play = function() {
-            var trackIndex = 0;
-            if(arguments.length > 0) {
-                trackIndex = arguments[0];
-            }
-            var track = this.tracks[trackIndex];
+        this.changeTrack = function(index) {
+            var track = this.tracks[index];
             if(track) {
+                var playing = this.isPlaying();
+                this.stop();
                 this.activeTrack = track;
-                this.activeTrack.audio.play();
+                if(playing) {
+                    this.play();
+                }
                 return true;
             }
             return false;
         }
 
+        this.play = function() {
+            var trackIndex = 0;
+            if(arguments.length > 0) {
+                trackIndex = arguments[0];
+            }
+            if(this.activeTrack || this.changeTrack(trackIndex)) {
+                if(this.activeTrack) {
+                    this.activeTrack.audio.play();
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        this.currentTrackIndex = function() {
+            if(this.activeTrack) {
+                return this.tracks.indexOf(this.activeTrack);
+            }
+            return 0;
+        }
+
+        this.hasNextTrack = function() {
+            return this.currentTrackIndex() + 1 < this.tracks.length;
+        }
+
+        this.hasPreviousTrack = function() {
+            return this.currentTrackIndex() - 1 >= 0
+        }
+
         this.nextTrack = function() {
-            // TODO
+            if(this.hasNextTrack()) {
+                var nextTrackIndex = this.currentTrackIndex() + 1;
+                this.changeTrack(nextTrackIndex);
+            }
         }
 
         this.previousTrack = function() {
-            // TODO
+            if(this.hasPreviousTrack()) {
+                var previousTrackIndex = this.currentTrackIndex() - 1;
+                this.changeTrack(previousTrackIndex);
+            }
         }
 
         this.pause = function() {
@@ -222,6 +257,21 @@ var saplayer = (function() {
             }
             if (stateChange == "ended") {
                 $(root).find("button.sap-stop").attr("disabled", true);
+            }
+
+            // Not a fan of this, it's inefficient and relies on a side effect
+            // of stateWatcher execution rather than an explicit code path for
+            // performing this update.
+            if(!playlist.hasNextTrack()) {
+                $(root).find("button.sap-next").attr("disabled", true);
+            } else {
+                $(root).find("button.sap-next").removeAttr("disabled");
+            }
+
+            if(!playlist.hasPreviousTrack()) {
+                $(root).find("button.sap-prev").attr("disabled", true);
+            } else {
+                $(root).find("button.sap-prev").removeAttr("disabled");
             }
         });
         $(root).trigger("statechange", "ended");

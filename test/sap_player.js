@@ -18,7 +18,7 @@ QUnit.test("SAP Player Tests", function(assert) {
     assert.ok(t1_dom.find(".sap-pause,.sap-next,.sap-play").length == 3, 
        "t3: Three controls should be present");   
 
-    $(".player-box").append(t1_dom);
-    $(".player-box").append(t2_dom);
-    $(".player-box").append(t3_dom);
+    $(".player-box").append($("<div>").append(t1_dom));
+    $(".player-box").append($("<div>").append(t2_dom));
+    $(".player-box").append($("<div>").append(t3_dom));
 });
