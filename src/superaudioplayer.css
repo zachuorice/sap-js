@@ -39,6 +39,11 @@ button.sap-control:hover {
     border: thin solid black;
 }
 
+button.sap-control:hover[disabled]
+{
+    border: thin solid transparent;
+}
+
 button.sap-play {
 }
 

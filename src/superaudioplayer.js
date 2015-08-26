@@ -34,22 +34,30 @@ var saplayer = (function() {
         this.activeTrack = false;
 
         this.play = function() {
-            trackIndex = 0;
+            var trackIndex = 0;
             if(arguments.length > 0) {
                 trackIndex = arguments[0];
             }
             var track = this.tracks[trackIndex];
             if(track) {
-                this.activeTrack = track.get(0);
-                this.activeTrack.play();
+                this.activeTrack = track;
+                this.activeTrack.audio.play();
                 return true;
             }
             return false;
         }
 
+        this.nextTrack = function() {
+            // TODO
+        }
+
+        this.previousTrack = function() {
+            // TODO
+        }
+
         this.pause = function() {
             if(this.activeTrack) {
-                this.activeTrack.pause();
+                this.activeTrack.audio.pause();
                 return true;
             }
             return false;
@@ -57,8 +65,7 @@ var saplayer = (function() {
 
         this.stop = function() {
             if(this.activeTrack) {
-                this.Pause();
-                this.Seek(0);
+                this.activeTrack.audio.load();
                 this.activeTrack = false;
                 return true;
             }
@@ -100,7 +107,7 @@ var saplayer = (function() {
         }
 
         this.trackLength = function() {
-            trackIndex = false;
+            var trackIndex = false;
             if(arguments.length > 0) {
                 trackIndex = arguments[0];
             }
@@ -111,12 +118,34 @@ var saplayer = (function() {
             }
             return false;
         }
+
+        // Set up a statechange event to be triggered on a given element
+        // whenever the state of the active track changes.
+        this.stateWatcher = function(elem, callback) {
+            function addWatcher(eventName, track) {
+                $(track.audio).on(eventName, function(evt) {
+                    $(elem).trigger("statechange", eventName);
+                });
+            }
+            $(this.tracks).each(function(index) {
+                addWatcher("play", this);
+                addWatcher("pause", this);
+                addWatcher("ended", this);
+                addWatcher("abort", this);
+                addWatcher("durationchange", this);
+                addWatcher("timeupdate", this);
+            });
+
+            if(callback !== undefined) {
+                $(elem).on("statechange", callback);
+            }
+        }
 	}
 	
 	var makePlaylistFromDOM = function(dom) {
         var tracks = [];
         $(dom).find("li").each(function(index) {
-            var audio = $(this).find("audio.sap-playlist-track-audio").first();
+            var audio = $(this).find("audio.sap-playlist-track-audio").first().get(0);
             var title = $(this).find("span.sap-playlist-track-title").text();
             var extra = $(this).find("div.sap-playlist-track-frame").first();
             if(extra.length > 0) {
@@ -139,15 +168,63 @@ var saplayer = (function() {
             buttons = ["play", "pause", "stop", "prev", "next"];
         }
         var root = $($.parseHTML('<div class="sap-controls"></div>')[0]);
-        var button_to_icon = {play:"fa-play", pause:"fa-pause", "stop":"fa-stop", 
-            "next":"fa-step-forward", "prev":"fa-step-backward"};
+        var buttonToIcon = {play:"fa-play", pause:"fa-pause", stop:"fa-stop", 
+            next:"fa-step-forward", prev:"fa-step-backward"};
+
+        var buttonEvents = {
+            play:function() 
+            {
+                console.debug("play");
+                playlist.play();
+            }, 
+            pause:function() 
+            {
+                console.debug("pause");
+                playlist.pause();
+            },
+            stop:function() 
+            {
+                console.debug("stop");
+                playlist.stop();
+            },
+            next:function() 
+            {
+                console.debug("next");
+                playlist.nextTrack();
+            },
+            prev:function() 
+            {
+                console.debug("prev");
+                playlist.previousTrack();
+            }
+        };
+
 
         $.each(buttons, function(index) {
             var button = $($.parseHTML('<button type="button" class="sap-control sap-' 
                     + this + '"><i class="fa ' + 
-                    button_to_icon[this] + '"></i></button>'));
+                    buttonToIcon[this] + '"></i></button>'));
+            button.click(buttonEvents[this]);
             root.append(button);
         });
+
+        playlist.stateWatcher(root, function(evt, stateChange) {
+            console.debug("statechange: " + stateChange);
+            // TODO: May be better to change this to do state changes using CSS classes and styling.
+            if(stateChange == "play") {
+                $(root).find("button.sap-play").attr("disabled", true);
+                $(root).find("button.sap-pause").removeAttr("disabled");
+                $(root).find("button.sap-stop").removeAttr("disabled");
+            }
+            else if(stateChange == "pause" || stateChange == "abort" || stateChange == "ended") {
+                $(root).find("button.sap-pause").attr("disabled", true);
+                $(root).find("button.sap-play").removeAttr("disabled");
+            }
+            if (stateChange == "ended") {
+                $(root).find("button.sap-stop").attr("disabled", true);
+            }
+        });
+        $(root).trigger("statechange", "ended");
 
         return root;
     }
