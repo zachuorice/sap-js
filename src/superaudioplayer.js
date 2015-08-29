@@ -362,8 +362,13 @@ var saplayer = (function() {
 })();
 
 (function($) {
-	$.fn.saplayer = function() {
-		// TODO
+	$.fn.saplayer = function(playlist_dom) {
+        var playlist = saplayer.makePlaylistFromDOM(playlist_dom);
+        var root = $('<div class="sap-player-container">');
+        root.append(saplayer.sapScrubber(playlist));
+        root.append(saplayer.sapPlayer(playlist));
+        root.append(saplayer.sapTrackList(playlist));
+        this.append(root);
 		return this;
 	}
 })(jQuery);

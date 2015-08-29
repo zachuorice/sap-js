@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title>Test: SAP Player Jquery Functionality</title>
+		<link rel="stylesheet" href="../src/superaudioplayer.css" media="screen">
+		<link rel="stylesheet" href="../node_modules/qunitjs/qunit/qunit.css" media="screen">
+        <link rel="stylesheet" href="../vendor/font-awesome-4.4.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+		<script src="../node_modules/qunitjs/qunit/qunit.js"></script>
+		<script src="../node_modules/jquery/dist/jquery.js"></script>
+		<script src="../src/superaudioplayer.js"></script>
+	</head>
+	<body>
+		<div id="qunit"></div>
+		<div id="qunit-fixture"></div>
+
+		<ol id="tracklist-input-t1" class="sap-playlist" style="display:none">
+			<li>
+				<span class="sap-playlist-track-title">Uno</span>
+				<audio class="sap-playlist-track-audio" controls="" src="uno.ogg">
+					Audio cannot be played.
+				</audio>
+			</li>
+		</ol>
+
+		<ol id="tracklist-input-t2" class="sap-playlist" style="display:none">
+			<li>
+				<span class="sap-playlist-track-title">Uno</span>
+				<audio class="sap-playlist-track-audio" controls="" src="uno.ogg">
+					Audio cannot be played.
+				</audio>
+			</li>
+			<li>
+				<span class="sap-playlist-track-title">Dos</span>
+				<audio class="sap-playlist-track-audio" controls="" src="dos.ogg">
+					Audio cannot be played.
+				</audio>
+			</li>	
+		</ol>
+
+		<ol id="tracklist-input-t3" class="sap-playlist" style="display:none">
+			<li>
+				<span class="sap-playlist-track-title">Uno</span>
+				<audio class="sap-playlist-track-audio" controls="" src="uno.ogg">
+					Audio cannot be played.
+				</audio>
+			</li>
+			<li>
+				<span class="sap-playlist-track-title">Dos</span>
+				<audio class="sap-playlist-track-audio" controls="" src="dos.ogg">
+					Audio cannot be played.
+				</audio>
+				<div class="sap-playlist-track-frame"><p>Some cool extra information!</p></div>
+			</li>
+			<li>
+				<span class="sap-playlist-track-title">Tres</span>
+				<audio class="sap-playlist-track-audio" controls="" src="tres.ogg">
+					Audio cannot be played.
+				</audio>
+			</li>
+			<li>
+				<span class="sap-playlist-track-title">Uno</span>
+				<audio class="sap-playlist-track-audio" controls="" src="uno.ogg">
+					Audio cannot be played.
+				</audio>
+			</li>
+			<li>
+				<span class="sap-playlist-track-title">Dos</span>
+				<audio class="sap-playlist-track-audio" controls="" src="dos.ogg">
+					Audio cannot be played.
+				</audio>
+				<div class="sap-playlist-track-frame"><p>Some cool extra information!</p></div>
+			</li>
+			<li>
+				<span class="sap-playlist-track-title">Tres</span>
+				<audio class="sap-playlist-track-audio" controls="" src="tres.ogg">
+					Audio cannot be played.
+				</audio>
+			</li>
+			<li>
+				<span class="sap-playlist-track-title">Uno</span>
+				<audio class="sap-playlist-track-audio" controls="" src="uno.ogg">
+					Audio cannot be played.
+				</audio>
+			</li>
+			<li>
+				<span class="sap-playlist-track-title">Dos</span>
+				<audio class="sap-playlist-track-audio" controls="" src="dos.ogg">
+					Audio cannot be played.
+				</audio>
+				<div class="sap-playlist-track-frame"><p>Some cool extra information!</p></div>
+			</li>
+			<li>
+				<span class="sap-playlist-track-title">Tres</span>
+				<audio class="sap-playlist-track-audio" controls="" src="tres.ogg">
+					Audio cannot be played.
+				</audio>
+			</li>
+		</ol>
+
+        <div class="player-box">
+        </div>
+
+		<script src="sap_jquery.js"></script>
+	</body>
+</html>
