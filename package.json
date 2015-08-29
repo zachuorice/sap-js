@@ -1,6 +1,6 @@
 {
   "name": "superaudioplayer",
-  "version": "0.0.1",
+  "version": "1.0",
   "description": "A jquery plugin for creating interactive HTML5 audio players.",
   "license": "MIT",
   "author": "Zachary Richey <zr.public@gmail.com>",
