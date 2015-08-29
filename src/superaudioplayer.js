@@ -312,10 +312,52 @@ var saplayer = (function() {
         return root;
     }
 
+    // Create, setup, and return the DOM for the SAP track listing controls.
+    var sapTrackList = function(playlist) {
+        // TODO: Side pane for details.
+        var root = $($.parseHTML('<div></div>'));
+        var track_list = $($.parseHTML('<ol class="sap-track-list"></ol>'));
+        var side_pane = $($.parseHTML('<div class="sap-track-list-details-pane"></div>'));
+        track_list.on("click", "li", function(evt) {
+            console.debug("click");
+            var index = $(evt.target).data("track-index");
+            playlist.stop();
+            playlist.play(index);
+        });
+
+        playlist.stateWatcher(track_list, function(evt, stateChange) {
+            root.find("li").removeClass("sap-playing");
+            side_pane.html("");
+            if(playlist.activeTrack) {
+                var currentTrackIndex = playlist.currentTrackIndex();
+                track_list.find("li").each(function(index) {
+                    if($(this).data("track-index") == currentTrackIndex) {
+                        $(this).addClass("sap-playing");
+                    }
+                });
+
+                if(playlist.activeTrack.data.extra) {
+                    side_pane.html(playlist.activeTrack.data.extra);
+                }
+            }
+        }, ["play", "ended", "abort"]);
+
+        $(playlist.tracks).each(function(index) {
+            var list_item = $("<li>").text(this.data.title); 
+            list_item.data("track-index", index);
+            track_list.append(list_item);
+        });
+
+        root.append(track_list);
+        root.append(side_pane);
+        return root;
+    }
+
 	return {
 		makePlaylistFromDOM:makePlaylistFromDOM,
         sapPlayer:sapPlayer,
-        sapScrubber:sapScrubber
+        sapScrubber:sapScrubber,
+        sapTrackList:sapTrackList
 	};
 })();
 

@@ -11,6 +11,10 @@ QUnit.test("SAP Player Tests", function(assert) {
     var t2_dom_timer = saplayer.sapScrubber(t2);
     var t3_dom_timer = saplayer.sapScrubber(t3);
 
+    var t1_dom_list = saplayer.sapTrackList(t1);
+    var t2_dom_list = saplayer.sapTrackList(t2);
+    var t3_dom_list = saplayer.sapTrackList(t3);
+
     assert.ok(t1_dom.hasClass("sap-controls"), "Returned object should have class 'sap-controls'");
     assert.ok(t2_dom.hasClass("sap-controls"), "Returned object should have class 'sap-controls'");
     assert.ok(t3_dom.hasClass("sap-controls"), "Returned object should have class 'sap-controls'");
@@ -22,8 +26,8 @@ QUnit.test("SAP Player Tests", function(assert) {
     assert.ok(t1_dom.find(".sap-pause,.sap-next,.sap-play").length == 3, 
        "t3: Three controls should be present");   
 
-    $(".player-box").append($("<div>").append(t1_dom_timer).append(t1_dom));
-    $(".player-box").append($("<div>").append(t2_dom_timer).append(t2_dom));
-    $(".player-box").append($("<div>").append(t3_dom_timer).append(t3_dom));
+    $(".player-box").append($("<div>").append(t1_dom_timer).append(t1_dom).append(t1_dom_list));
+    $(".player-box").append($("<div>").append(t2_dom_timer).append(t2_dom).append(t2_dom_list));
+    $(".player-box").append($("<div>").append(t3_dom_timer).append(t3_dom).append(t3_dom_list));
 
 });
