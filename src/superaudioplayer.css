@@ -60,3 +60,46 @@ button.sap-prev {
 }
 
 /* TODO: Audio scrubber styling. */
+/* Interesting, youtube's scrubber uses scaleX and others. */
+
+/*
+ * Audio scrubber will be done using a fixed-width and height bar that
+ * has different sizes for several common screen sizes (e.g. mobile, tablet
+ * desktop).
+ *
+ * Basically will work using z-indexes and position: absolute elements along
+ * with scaleX and other CSS transforms.
+ *
+ * So the remaining bar will be done with a grey bar underneath the current
+ * progress bar, with the current progress bar being grown with scaleX.
+ * */
+
+/* TODO: Different screen sizes using @media */
+div.sap-audio-scrubber-chrome {
+    width: 100px;
+    height: 4px;
+    position: relative;
+}
+
+div.sap-audio-scrubber-chrome:hover {
+    transform: scaleY(2.00);
+}
+
+div.sap-audio-scrubber-chrome > div.sap-audio-scrubber {
+    position: absolute;
+    top:0;
+    left:0;
+    width: 100%;
+    height: 100%;
+    transform-origin: left 50%;
+}
+
+div.sap-audio-scrubber-total {
+    z-index: 1;
+    background-color: grey;
+}
+
+div.sap-audio-scrubber-current {
+    z-index: 2;
+    background-color: red;
+}

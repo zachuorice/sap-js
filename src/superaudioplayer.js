@@ -118,7 +118,7 @@ var saplayer = (function() {
 
         this.seek = function(newSeconds) {
             if(this.activeTrack) {
-                this.activeTrack.currentTime = newSeconds;
+                this.activeTrack.audio.currentTime = newSeconds;
                 return true;
             }
             return false;
@@ -126,7 +126,7 @@ var saplayer = (function() {
 
         this.seekAhead = function(seconds) {
             if(this.activeTrack) {
-                this.activeTrack.currentTime += seconds;
+                this.activeTrack.audio.currentTime += seconds;
                 return true;
             }
             return false;
@@ -141,7 +141,7 @@ var saplayer = (function() {
             if(this.activeTrack) {
                 return this.activeTrack.audio.currentTime / this.activeTrack.audio.duration;
             }
-            return 1.00;
+            return 0.00;
         }
 
         this.trackLength = function() {
@@ -150,11 +150,11 @@ var saplayer = (function() {
                 trackIndex = arguments[0];
             }
             if(!trackIndex && this.activeTrack) {
-                return this.activeTrack.duration;
+                return this.activeTrack.audio.duration;
             } else if (trackIndex) {
-                return this.tracks[trackIndex].get(0).duration;
+                return this.tracks[trackIndex].get(0).audio.duration;
             }
-            return false;
+            return 0;
         }
 
         // Set up a statechange event to be triggered on a given element
@@ -285,28 +285,26 @@ var saplayer = (function() {
         return root;
     }
 
-    // Create, setup, and return the DOM for the SAP Timer controls.
-    var sapTimer = function(playlist) {
-        var root = $($.parseHTML('<div class="sap-audio-scrubber-container">' + 
+    // Create, setup, and return the DOM for the SAP Scrubber controls.
+    var sapScrubber = function(playlist) {
+        var root = $($.parseHTML('<div class="sap-audio-scrubber-chrome">' + 
                     '<div class="sap-audio-scrubber sap-audio-scrubber-current"></div>' + 
-                    '<div class="sap-audio-scrubber sap-audio-scrubber-future"></div></div>'));
+                    '<div class="sap-audio-scrubber sap-audio-scrubber-total"></div></div>'));
 
         playlist.stateWatcher(root, function(evt, stateChange) {
-            var timePassed = 0;
-            var timeRemaining = 100;
-            if(playlist.activeTrack) {
-                var remainingTime = playlist.currentTime();
-                timePassed = Math.ceil(remainingTime * 100);
-                timeRemaining = Math.ceil((1 - remainingTime) * 100);
-                console.debug(timePassed);
-                console.debug(timeRemaining);
-            }
-            root.find(".sap-audio-scrubber-current").css("width", timePassed.toString() + '%');
-            root.find(".sap-audio-scrubber-future").css("width", timeRemaining.toString() + '%');
+            var timePassed = playlist.currentTime();
+            root.find(".sap-audio-scrubber-current").css("transform", 
+                "scaleX(" + timePassed.toString() + ")");
         }, ["play", "pause", "ended", "abort", "durationchange", "timeupdate"]);
 
-        root.find(".sap-audio-scrubber-current").click(function(evt) {
-            // TODO Basic maths
+        root.click(function(evt) {
+            console.debug("click: " + evt.offsetX + ',' + evt.offsetY);
+            var seekRatio = evt.offsetX / root.width();
+            if(!playlist.isPlaying()) {
+                playlist.play();
+            }
+            var newTime = Math.floor(seekRatio * playlist.trackLength());
+            playlist.seek(newTime);
         });
 
         root.trigger("statechange", "ended");
@@ -317,7 +315,7 @@ var saplayer = (function() {
 	return {
 		makePlaylistFromDOM:makePlaylistFromDOM,
         sapPlayer:sapPlayer,
-        sapTimer:sapTimer
+        sapScrubber:sapScrubber
 	};
 })();
 

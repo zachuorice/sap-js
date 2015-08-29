@@ -8,7 +8,7 @@ Allows grouping of audio tags into a playlist. Keeps track of play/pause, curren
 ### SAP Player (Frontend)
 This component allows you to manage the playback of an audio object. This includes play/pause, next, previous, seek forward, and seek back controls. This is backed by the SAP Playlist component.
 
-### SAP Timeline (Frontend)
+### SAP Scrubber (Frontend)
 This component allows changing your position in a track by clicking on a timeline. This is backed by the SAP Playlist component.
 
 ### SAP Track List (Frontend)
