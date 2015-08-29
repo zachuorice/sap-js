@@ -59,26 +59,4 @@ button.sap-next {
 button.sap-prev {
 }
 
-.sap-audio-scrubber-container {
-    display: inline-block;
-    margin: 0;
-    padding: 0;
-}
-
-.sap-audio-scrubber {
-    height: 100%;
-    display: inline-block;
-    margin: 0;
-    padding: 0;
-}
-
-.sap-audio-scrubber-current {
-    border-right: thin solid white;
-    background-color: black;
-    float: left;
-}
-
-.sap-audio-scrubber-future {
-    background-color: grey;
-    overflow: hidden;
-}
+/* TODO: Audio scrubber styling. */

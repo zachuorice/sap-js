@@ -22,6 +22,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 var saplayer = (function() {
+
 	// A single track of audio, and associated data.
 	var Track = function(audio, data) {
 		this.audio = audio;
@@ -33,6 +34,7 @@ var saplayer = (function() {
 		this.tracks = tracks;
         this.activeTrack = false;
 
+        // Change the active track to a new one by index.
         this.changeTrack = function(index) {
             var track = this.tracks[index];
             if(track) {
@@ -134,11 +136,12 @@ var saplayer = (function() {
             return this.seekAhead(-seconds);
         }
 
-        this.currentTime = function() {
+        // Return the current time as a double between 0 and 1.
+        this.currentTime  = function() {
             if(this.activeTrack) {
-                return this.activeTrack.currentTime;
+                return this.activeTrack.audio.currentTime / this.activeTrack.audio.duration;
             }
-            return false;
+            return 1.00;
         }
 
         this.trackLength = function() {
@@ -156,19 +159,22 @@ var saplayer = (function() {
 
         // Set up a statechange event to be triggered on a given element
         // whenever the state of the active track changes.
-        this.stateWatcher = function(elem, callback) {
+        this.stateWatcher = function(elem, callback, events) {
             function addWatcher(eventName, track) {
                 $(track.audio).on(eventName, function(evt) {
                     $(elem).trigger("statechange", eventName);
                 });
             }
+
+            if(events === undefined) {
+                events = ["play", "pause", "ended", "abort"];
+            }
+
             $(this.tracks).each(function(index) {
-                addWatcher("play", this);
-                addWatcher("pause", this);
-                addWatcher("ended", this);
-                addWatcher("abort", this);
-                addWatcher("durationchange", this);
-                addWatcher("timeupdate", this);
+                var track = this;
+                $(events).each(function(index) {
+                    addWatcher(this.toString(), track);
+                })
             });
 
             if(callback !== undefined) {
@@ -245,7 +251,7 @@ var saplayer = (function() {
 
         playlist.stateWatcher(root, function(evt, stateChange) {
             console.debug("statechange: " + stateChange);
-            // TODO: May be better to change this to do state changes using CSS classes and styling.
+            // TODO: Would be better to change this to do state changes using CSS classes and styling.
             if(stateChange == "play") {
                 $(root).find("button.sap-play").attr("disabled", true);
                 $(root).find("button.sap-pause").removeAttr("disabled");
@@ -255,7 +261,7 @@ var saplayer = (function() {
                 $(root).find("button.sap-pause").attr("disabled", true);
                 $(root).find("button.sap-play").removeAttr("disabled");
             }
-            if (stateChange == "ended") {
+            if (stateChange == "abort" || stateChange == "ended") {
                 $(root).find("button.sap-stop").attr("disabled", true);
             }
 
@@ -279,9 +285,39 @@ var saplayer = (function() {
         return root;
     }
 
+    // Create, setup, and return the DOM for the SAP Timer controls.
+    var sapTimer = function(playlist) {
+        var root = $($.parseHTML('<div class="sap-audio-scrubber-container">' + 
+                    '<div class="sap-audio-scrubber sap-audio-scrubber-current"></div>' + 
+                    '<div class="sap-audio-scrubber sap-audio-scrubber-future"></div></div>'));
+
+        playlist.stateWatcher(root, function(evt, stateChange) {
+            var timePassed = 0;
+            var timeRemaining = 100;
+            if(playlist.activeTrack) {
+                var remainingTime = playlist.currentTime();
+                timePassed = Math.ceil(remainingTime * 100);
+                timeRemaining = Math.ceil((1 - remainingTime) * 100);
+                console.debug(timePassed);
+                console.debug(timeRemaining);
+            }
+            root.find(".sap-audio-scrubber-current").css("width", timePassed.toString() + '%');
+            root.find(".sap-audio-scrubber-future").css("width", timeRemaining.toString() + '%');
+        }, ["play", "pause", "ended", "abort", "durationchange", "timeupdate"]);
+
+        root.find(".sap-audio-scrubber-current").click(function(evt) {
+            // TODO Basic maths
+        });
+
+        root.trigger("statechange", "ended");
+
+        return root;
+    }
+
 	return {
 		makePlaylistFromDOM:makePlaylistFromDOM,
-        sapPlayer:sapPlayer
+        sapPlayer:sapPlayer,
+        sapTimer:sapTimer
 	};
 })();
 
