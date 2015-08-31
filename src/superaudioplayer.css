@@ -24,6 +24,7 @@ THE SOFTWARE.
 
 /* TODO: Come up with a good color scheme... */
 
+/* SAP controls CSS */
 div.sap-controls {
     display: inline-block;
     padding: thin;
@@ -73,6 +74,7 @@ button.sap-prev {
  * progress bar, with the current progress bar being grown with scaleX.
  * */
 
+/* SAP audio scrubber CSS */
 /* TODO: Different screen sizes using @media */
 div.sap-audio-scrubber-chrome {
     width: 100px;
@@ -103,6 +105,7 @@ div.sap-audio-scrubber-current {
     background-color: red;
 }
 
+/* SAP track list CSS */
 /* TODO: Different screen sizes using @media and 
  * a single global player container to standardize width */
 ol.sap-track-list {

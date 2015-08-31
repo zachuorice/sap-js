@@ -251,36 +251,39 @@ var saplayer = (function() {
 
         playlist.stateWatcher(root, function(evt, stateChange) {
             console.debug("statechange: " + stateChange);
-            // TODO: Would be better to change this to do state changes using CSS classes and styling.
+
             if(stateChange == "play") {
-                $(root).find("button.sap-play").attr("disabled", true);
-                $(root).find("button.sap-pause").removeAttr("disabled");
-                $(root).find("button.sap-stop").removeAttr("disabled");
+                $(root).find("button.sap-play").prop("disabled", true);
+                $(root).find("button.sap-pause").prop("disabled", false);
+                $(root).find("button.sap-stop").prop("disabled", false);
             }
-            else if(stateChange == "pause" || stateChange == "abort" || stateChange == "ended") {
-                $(root).find("button.sap-pause").attr("disabled", true);
-                $(root).find("button.sap-play").removeAttr("disabled");
+            else if(stateChange == "pause" || stateChange == "abort" || 
+                    stateChange == "ended" || stateChange == "initial") {
+                $(root).find("button.sap-pause").prop("disabled", true);
+                $(root).find("button.sap-play").prop("disabled", false);
             }
-            if (stateChange == "abort" || stateChange == "ended") {
-                $(root).find("button.sap-stop").attr("disabled", true);
+            if (stateChange == "abort" || stateChange == "ended" || 
+                stateChange == "initial") {
+                $(root).find("button.sap-stop").prop("disabled", true);
             }
 
-            // Not a fan of this, it's inefficient and relies on a side effect
-            // of stateWatcher execution rather than an explicit code path for
-            // performing this update.
+            if(stateChange == "ended") {
+                playlist.nextTrack();
+            }
+
             if(!playlist.hasNextTrack()) {
-                $(root).find("button.sap-next").attr("disabled", true);
+                $(root).find("button.sap-next").prop("disabled", true);
             } else {
-                $(root).find("button.sap-next").removeAttr("disabled");
+                $(root).find("button.sap-next").prop("disabled", false);
             }
 
             if(!playlist.hasPreviousTrack()) {
-                $(root).find("button.sap-prev").attr("disabled", true);
+                $(root).find("button.sap-prev").prop("disabled", true);
             } else {
-                $(root).find("button.sap-prev").removeAttr("disabled");
+                $(root).find("button.sap-prev").prop("disabled", false);
             }
         });
-        $(root).trigger("statechange", "ended");
+        $(root).trigger("statechange", "initial");
 
         return root;
     }
@@ -314,7 +317,6 @@ var saplayer = (function() {
 
     // Create, setup, and return the DOM for the SAP track listing controls.
     var sapTrackList = function(playlist) {
-        // TODO: Side pane for details.
         var root = $($.parseHTML('<div></div>'));
         var track_list = $($.parseHTML('<ol class="sap-track-list"></ol>'));
         var side_pane = $($.parseHTML('<div class="sap-track-list-details-pane"></div>'));
