@@ -1,5 +1,4 @@
 # Super Audio Player
-## Introduction
 Super Audio Player, or SAP, is a jquery plugin for adding an html5 audio player UI to any page. This player offers play/pause functionality, a bar representing the current time in the track, ability to seek in the track using this bar, support for a playlist of tracks. This is achieved through HTML, CSS, and Javascript only.
 
 ## Principles
