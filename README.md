@@ -26,3 +26,4 @@ Also not well-tested, so probably buggy on some browsers.
 * Better unit tests
 * Support for annotations on tracks by timestamp
 * Better expandable track information frame
+* Project website (and example, if possible)
