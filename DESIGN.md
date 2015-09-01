@@ -13,3 +13,9 @@ This component allows changing your position in a track by clicking on a timelin
 
 ### SAP Track List (Frontend)
 This component displays a list of tracks which are linked to a SAP Playlist. Each track can also have an associated expandable frame which will contain additional info about the track.
+
+## Design Notes
+### MVC Refactor
+A refactor that splits up the code into a model/controller and view setup would work well. The controller code would handle actions and passing data to and from the view, while the view would be responsible for responding to user input with the appropriate actions.
+
+This would allow for entirely custom players, rather than the fairly inflexible UI component architecture that we have at the moment.
