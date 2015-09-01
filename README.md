@@ -12,12 +12,18 @@ See test/sap\_jquery.html for a usage example.
 ### Release 1
 This release is more of a prototype, styling on the player isn't very good or consistent yet, but it is somewhat functional.
 
-Also not well-tested, so probably buggy.
+Also not well-tested, so probably buggy on some browsers.
 
 ## TODO/Reminders
 ### v2
 * More consistent and modern player style
+  * Consistent width for player components [DONE]
+  * True Flat-style color scheme/look
+  * Better track list look
+  * Track list details dropdown/expandable
 * Theme-able player style
+  * Support for custom color schemes (mostly a matter of defining and employing a few key CSS color classes for components)
+  * Need to figure out a few "goalpost" alternative layouts for the player that would help define where to take things regarding looks customization
 * Better unit tests
 * Support for annotations on tracks by timestamp
 * Better expandable track information frame

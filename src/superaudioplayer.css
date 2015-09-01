@@ -22,18 +22,22 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-/* TODO: Come up with a good color scheme... */
+div.sap-player-container {
+    width: 100%;
+}
 
 /* SAP controls CSS */
 div.sap-controls {
     display: inline-block;
     padding: thin;
     background-color: lightgrey;
+    width: 100%;
 }
 
 button.sap-control {
     background: none;
     border: thin solid transparent;
+    margin: 0 auto;
 }
 
 button.sap-control:hover {
@@ -75,9 +79,8 @@ button.sap-prev {
  * */
 
 /* SAP audio scrubber CSS */
-/* TODO: Different screen sizes using @media */
 div.sap-audio-scrubber-chrome {
-    width: 100px;
+    width: 100%;
     height: 4px;
     position: relative;
 }
@@ -106,13 +109,12 @@ div.sap-audio-scrubber-current {
 }
 
 /* SAP track list CSS */
-/* TODO: Different screen sizes using @media and 
- * a single global player container to standardize width */
 ol.sap-track-list {
-    width: 100px;
+    width: 100%;
     height: 100px;
     overflow-y: scroll;
     overflow-x: hidden;
+    box-sizing: border-box;
 }
 
 ol.sap-track-list > li {
