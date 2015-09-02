@@ -23,6 +23,7 @@ Also not well-tested, so probably buggy on some browsers.
 * Theme-able player style
   * Support for custom color schemes (mostly a matter of defining and employing a few key CSS color classes for components)
   * Need to figure out a few "goalpost" alternative layouts for the player that would help define where to take things regarding looks customization
+  * Important to provide nice default looks and layouts while also allowing customization
 * Better unit tests
 * Support for annotations on tracks by timestamp
 * Better expandable track information frame

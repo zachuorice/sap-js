@@ -204,13 +204,62 @@ var saplayer = (function() {
     //
     // buttons: An array which will determine the order of and types of
     // controls on the player. Values allowed in array: play, pause, stop, next, prev
-    var sapPlayer = function(playlist, buttons) {
+    var sapPlayer = function(playlist, buttons, buttonView) {
         if(buttons === undefined) {
             buttons = ["play", "pause", "stop", "prev", "next"];
         }
-        var root = $($.parseHTML('<div class="sap-controls"></div>')[0]);
-        var buttonToIcon = {play:"fa-play", pause:"fa-pause", stop:"fa-stop", 
-            next:"fa-step-forward", prev:"fa-step-backward"};
+
+        if(buttonView === undefined) {
+            buttonView = function(playlist, buttons, events) {
+                var root = $($.parseHTML('<div class="sap-controls"></div>')[0]);
+                var buttonToIcon = {play:"fa-play", pause:"fa-pause", stop:"fa-stop", 
+                    next:"fa-step-forward", prev:"fa-step-backward"};
+                $.each(buttons, function(index) {
+                    var button = $($.parseHTML('<button type="button" class="sap-control sap-' 
+                            + this + '"><i class="fa ' + 
+                            buttonToIcon[this] + '"></i></button>'));
+                    button.click(buttonEvents[this]);
+                    root.append(button);
+                });
+
+                playlist.stateWatcher(root, function(evt, stateChange) {
+                    console.debug("statechange: " + stateChange);
+
+                    if(stateChange == "play") {
+                        $(root).find("button.sap-play").prop("disabled", true);
+                        $(root).find("button.sap-pause").prop("disabled", false);
+                        $(root).find("button.sap-stop").prop("disabled", false);
+                    }
+                    else if(stateChange == "pause" || stateChange == "abort" || 
+                            stateChange == "ended" || stateChange == "initial") {
+                        $(root).find("button.sap-pause").prop("disabled", true);
+                        $(root).find("button.sap-play").prop("disabled", false);
+                    }
+                    if (stateChange == "abort" || stateChange == "ended" || 
+                        stateChange == "initial") {
+                        $(root).find("button.sap-stop").prop("disabled", true);
+                    }
+
+                    if(stateChange == "ended") {
+                        playlist.nextTrack();
+                    }
+
+                    if(!playlist.hasNextTrack()) {
+                        $(root).find("button.sap-next").prop("disabled", true);
+                    } else {
+                        $(root).find("button.sap-next").prop("disabled", false);
+                    }
+
+                    if(!playlist.hasPreviousTrack()) {
+                        $(root).find("button.sap-prev").prop("disabled", true);
+                    } else {
+                        $(root).find("button.sap-prev").prop("disabled", false);
+                    }
+                });
+                $(root).trigger("statechange", "initial");
+                return root;
+            }
+        }
 
         var buttonEvents = {
             play:function() 
@@ -240,119 +289,82 @@ var saplayer = (function() {
             }
         };
 
-
-        $.each(buttons, function(index) {
-            var button = $($.parseHTML('<button type="button" class="sap-control sap-' 
-                    + this + '"><i class="fa ' + 
-                    buttonToIcon[this] + '"></i></button>'));
-            button.click(buttonEvents[this]);
-            root.append(button);
-        });
-
-        playlist.stateWatcher(root, function(evt, stateChange) {
-            console.debug("statechange: " + stateChange);
-
-            if(stateChange == "play") {
-                $(root).find("button.sap-play").prop("disabled", true);
-                $(root).find("button.sap-pause").prop("disabled", false);
-                $(root).find("button.sap-stop").prop("disabled", false);
-            }
-            else if(stateChange == "pause" || stateChange == "abort" || 
-                    stateChange == "ended" || stateChange == "initial") {
-                $(root).find("button.sap-pause").prop("disabled", true);
-                $(root).find("button.sap-play").prop("disabled", false);
-            }
-            if (stateChange == "abort" || stateChange == "ended" || 
-                stateChange == "initial") {
-                $(root).find("button.sap-stop").prop("disabled", true);
-            }
-
-            if(stateChange == "ended") {
-                playlist.nextTrack();
-            }
-
-            if(!playlist.hasNextTrack()) {
-                $(root).find("button.sap-next").prop("disabled", true);
-            } else {
-                $(root).find("button.sap-next").prop("disabled", false);
-            }
-
-            if(!playlist.hasPreviousTrack()) {
-                $(root).find("button.sap-prev").prop("disabled", true);
-            } else {
-                $(root).find("button.sap-prev").prop("disabled", false);
-            }
-        });
-        $(root).trigger("statechange", "initial");
-
-        return root;
+        return buttonView(playlist, buttons, buttonEvents);
     }
 
     // Create, setup, and return the DOM for the SAP Scrubber controls.
-    var sapScrubber = function(playlist) {
-        var root = $($.parseHTML('<div class="sap-audio-scrubber-chrome">' + 
-                    '<div class="sap-audio-scrubber sap-audio-scrubber-current"></div>' + 
-                    '<div class="sap-audio-scrubber sap-audio-scrubber-total"></div></div>'));
+    var sapScrubber = function(playlist, scrubberView) {
+        if(scrubberView === undefined) {
+            scrubberView = function(playlist) {
+                var root = $($.parseHTML('<div class="sap-audio-scrubber-chrome">' + 
+                            '<div class="sap-audio-scrubber sap-audio-scrubber-current"></div>' + 
+                            '<div class="sap-audio-scrubber sap-audio-scrubber-total"></div></div>'));
+                playlist.stateWatcher(root, function(evt, stateChange) {
+                    var timePassed = playlist.currentTime();
+                    root.find(".sap-audio-scrubber-current").css("transform", 
+                        "scaleX(" + timePassed.toString() + ")");
+                }, ["play", "pause", "ended", "abort", "durationchange", "timeupdate"]);
 
-        playlist.stateWatcher(root, function(evt, stateChange) {
-            var timePassed = playlist.currentTime();
-            root.find(".sap-audio-scrubber-current").css("transform", 
-                "scaleX(" + timePassed.toString() + ")");
-        }, ["play", "pause", "ended", "abort", "durationchange", "timeupdate"]);
+                root.click(function(evt) {
+                    console.debug("click: " + evt.offsetX + ',' + evt.offsetY);
+                    var seekRatio = evt.offsetX / root.width();
+                    if(!playlist.isPlaying()) {
+                        playlist.play();
+                    }
+                    var newTime = Math.floor(seekRatio * playlist.trackLength());
+                    playlist.seek(newTime);
+                });
 
-        root.click(function(evt) {
-            console.debug("click: " + evt.offsetX + ',' + evt.offsetY);
-            var seekRatio = evt.offsetX / root.width();
-            if(!playlist.isPlaying()) {
-                playlist.play();
+                root.trigger("statechange", "ended");
+                return root;
             }
-            var newTime = Math.floor(seekRatio * playlist.trackLength());
-            playlist.seek(newTime);
-        });
-
-        root.trigger("statechange", "ended");
-
-        return root;
+        }
+        return scrubberView(playlist);
     }
 
     // Create, setup, and return the DOM for the SAP track listing controls.
-    var sapTrackList = function(playlist) {
-        var root = $($.parseHTML('<div></div>'));
-        var track_list = $($.parseHTML('<ol class="sap-track-list"></ol>'));
-        var side_pane = $($.parseHTML('<div class="sap-track-list-details-pane"></div>'));
-        track_list.on("click", "li", function(evt) {
-            console.debug("click");
-            var index = $(evt.target).data("track-index");
-            playlist.stop();
-            playlist.play(index);
-        });
-
-        playlist.stateWatcher(track_list, function(evt, stateChange) {
-            root.find("li").removeClass("sap-playing");
-            side_pane.html("");
-            if(playlist.activeTrack) {
-                var currentTrackIndex = playlist.currentTrackIndex();
-                track_list.find("li").each(function(index) {
-                    if($(this).data("track-index") == currentTrackIndex) {
-                        $(this).addClass("sap-playing");
-                    }
+    var sapTrackList = function(playlist, trackListView) {
+        if(trackListView === undefined) {
+            trackListView = function(playlist) {
+                var root = $($.parseHTML('<div></div>'));
+                var track_list = $($.parseHTML('<ol class="sap-track-list"></ol>'));
+                var side_pane = $($.parseHTML('<div class="sap-track-list-details-pane"></div>'));
+                track_list.on("click", "li", function(evt) {
+                    console.debug("click");
+                    var index = $(evt.target).data("track-index");
+                    playlist.stop();
+                    playlist.play(index);
                 });
 
-                if(playlist.activeTrack.data.extra) {
-                    side_pane.html(playlist.activeTrack.data.extra);
-                }
+                playlist.stateWatcher(track_list, function(evt, stateChange) {
+                    root.find("li").removeClass("sap-playing");
+                    side_pane.html("");
+                    if(playlist.activeTrack) {
+                        var currentTrackIndex = playlist.currentTrackIndex();
+                        track_list.find("li").each(function(index) {
+                            if($(this).data("track-index") == currentTrackIndex) {
+                                $(this).addClass("sap-playing");
+                            }
+                        });
+
+                        if(playlist.activeTrack.data.extra) {
+                            side_pane.html(playlist.activeTrack.data.extra);
+                        }
+                    }
+                }, ["play", "ended", "abort"]);
+
+                $(playlist.tracks).each(function(index) {
+                    var list_item = $("<li>").text(this.data.title); 
+                    list_item.data("track-index", index);
+                    track_list.append(list_item);
+                });
+
+                root.append(track_list);
+                root.append(side_pane);
+                return root;
             }
-        }, ["play", "ended", "abort"]);
-
-        $(playlist.tracks).each(function(index) {
-            var list_item = $("<li>").text(this.data.title); 
-            list_item.data("track-index", index);
-            track_list.append(list_item);
-        });
-
-        root.append(track_list);
-        root.append(side_pane);
-        return root;
+        }
+        return trackListView(playlist);
     }
 
 	return {
@@ -364,13 +376,21 @@ var saplayer = (function() {
 })();
 
 (function($) {
-	$.fn.saplayer = function(playlist_dom) {
+	$.fn.saplayer = function(playlist_dom, options) {
         var playlist = saplayer.makePlaylistFromDOM(playlist_dom);
-        var root = $('<div class="sap-player-container">');
-        root.append(saplayer.sapScrubber(playlist));
-        root.append(saplayer.sapPlayer(playlist));
-        root.append(saplayer.sapTrackList(playlist));
-        this.append(root);
+        if(options === undefined) {
+            options = {};
+        }
+        if(options["sapView"] === undefined) {
+            options["sapView"] = function(playlist) {
+                var root = $('<div class="sap-player-container">');
+                root.append(saplayer.sapScrubber(playlist), options["scrubberView"]);
+                root.append(saplayer.sapPlayer(playlist), options["playerView"]);
+                root.append(saplayer.sapTrackList(playlist), options["trackList"]);
+                return root;
+            }
+        }
+        this.append(options["sapView"](playlist));
 		return this;
 	}
 })(jQuery);
