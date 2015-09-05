@@ -19,6 +19,9 @@ Also not well-tested, so probably buggy on some browsers.
 ### Release 1.1.0
 Improved styling, layout, and behaviour along with some small bug fixes.
 
+### Releas 2.0.0
+Project website done.
+
 ## TODO/Reminders
 ### v2
 * More consistent and modern player style [DONE]
@@ -30,7 +33,7 @@ Improved styling, layout, and behaviour along with some small bug fixes.
   * Track list details pane [DONE]
     * Will appear on bottom of track list [DONE]
     * Will appear as a distinct box with a border on top separating it from the list [DONE]
-* Project website (and example, if possible)
+* Project website (and example, if possible) [DONE]
 
 ### v3
 * Support for annotations on tracks by timestamp
