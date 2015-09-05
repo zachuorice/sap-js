@@ -22,8 +22,8 @@ Also not well-tested, so probably buggy on some browsers.
     * Currently doesn't really fit in with the overall look of the player
     * Would be better to have distinct boxes for each track
   * Track list details pane
-    * Will appear on bottom of track list
-    * Will appear as a distinct box with a border on top separating it from the list
+    * Will appear on bottom of track list [DONE]
+    * Will appear as a distinct box with a border on top separating it from the list [DONE]
     * Will support operating as an expandable box but not require or default to it
   * Intercept events from internal use of Playlist methods (e.g. this.nextTrack calling this.stop)
     * No need to let those events out, could cause bugs or inconsistent behavior

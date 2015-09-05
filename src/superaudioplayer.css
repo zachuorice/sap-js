@@ -129,5 +129,7 @@ ol.sap-track-list > li:hover {
 }
 
 div.sap-track-list-details-pane {
-    float: left;
+    border-top: solid thin #BBBBBB;
+    border-bottom: solid thin #BBBBBB;
+    background: #EEEEEE;
 }
