@@ -38,12 +38,10 @@ var saplayer = (function() {
         this.changeTrack = function(index) {
             var track = this.tracks[index];
             if(track) {
-                var playing = this.isPlaying();
                 this.stop();
                 this.activeTrack = track;
-                if(playing) {
-                    this.play();
-                }
+                this.activeTrack.audio.load();
+                this.play();
                 return true;
             }
             return false;
@@ -240,6 +238,7 @@ var saplayer = (function() {
                         $(root).find("button.sap-stop").prop("disabled", true);
                     }
 
+                    // Move to the next track (if any) when playback ends.
                     if(stateChange == "ended") {
                         playlist.nextTrack();
                     }

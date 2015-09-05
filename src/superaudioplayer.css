@@ -30,38 +30,30 @@ div.sap-player-container {
 div.sap-controls {
     display: inline-block;
     padding: thin;
-    background-color: lightgrey;
     width: 100%;
+    background: #0272DF;
 }
 
 button.sap-control {
     background: none;
-    border: thin solid transparent;
-    margin: 0 auto;
+    margin: 0 2px 2px 0;
+    border: none;
+    font-size: larger;
+    background: #2C86DD;
+    color: white;
 }
 
 button.sap-control:hover {
-    border: thin solid black;
+    background: #0272DF;
+}
+
+button.sap-control[disabled] {
+    background: #7AA6D1;
 }
 
 button.sap-control:hover[disabled]
 {
-    border: thin solid transparent;
-}
-
-button.sap-play {
-}
-
-button.sap-pause {
-}
-
-button.sap-stop {
-}
-
-button.sap-next {
-}
-
-button.sap-prev {
+    background: #7AA6D1;
 }
 
 /* Interesting, youtube's scrubber uses scaleX and others. */
@@ -100,40 +92,42 @@ div.sap-audio-scrubber-chrome > div.sap-audio-scrubber {
 
 div.sap-audio-scrubber-total {
     z-index: 1;
-    background-color: grey;
+    background: #FFCB22;
 }
 
 div.sap-audio-scrubber-current {
     z-index: 2;
-    background-color: red;
+    background: #FFE48D;
 }
 
 /* SAP track list CSS */
 ol.sap-track-list {
     width: 100%;
     height: 100px;
-    overflow-y: scroll;
     overflow-x: hidden;
     box-sizing: border-box;
+    background: #EEEEEE;
+    margin: 0;
+    padding: 0;
 }
 
 ol.sap-track-list > li {
-    background-color: lightgrey;
     text-overflow: ellipsis;
     white-space: nowrap;
     cursor: pointer;
+    border-bottom: solid thin #BBBBBB;
+    list-style-position: inside;
+    padding: 2%;
 }
 
 ol.sap-track-list > li.sap-playing {
-    background-color: darkgrey;
+    background: #DDDDDD;
 }
 
 ol.sap-track-list > li:hover {
-    background-color: grey;
+    background: #CCCCCC;
 }
 
-/* TODO: Style this... */
 div.sap-track-list-details-pane {
-    background-color: lightgrey;
     float: left;
 }
