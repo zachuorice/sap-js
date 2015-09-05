@@ -11,6 +11,10 @@
         <!-- Place favicon.ico in the root directory -->
 
         <link rel="stylesheet" href="css/normalize.css">
+        <link rel="stylesheet" href="css/bootstrap.min.css">
+        <link rel="stylesheet" href="css/font-awesome.min.css">
+        <link rel="stylesheet" href="css/superaudioplayer.min.css">
+        <link rel="stylesheet" href="css/brand.css">
         <script src="js/vendor/modernizr-2.8.3.min.js"></script>
     </head>
     <body>
@@ -18,7 +22,114 @@
             <p class="browserupgrade">You are using an <strong>outdated</strong> browser. Please <a href="http://browsehappy.com/">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 
+        <nav class="navbar navbar-default">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" 
+                        data-toggle="collapse" data-target="navbar" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">SAP-js</a>
+                </div>
+                <div class="collapse navbar-collapse" id="navbar">
+                    <ul class="nav navbar-nav">
+                        <li><a href="https://github.com/zachuorice/sap-js/">Github</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        <div class="container">
+            <div class="row brand-color-primary">
+                <div class="page-header">
+                    <h1>Super Audio Player <small>An HTML5 audio player UI.</small></h1>
+                </div>
+            </div>
+            <div class="row brand-color-secondary">
+                <div class="jumbotron">
+                    <h1>Welcome!</h1>
+                    <p>Super Audio Player is an jquery plugin for turning HTML into an interactive audio player!</p>
+                    <p><a class="btn btn-primary btn-lg" href="#demo" role="button">See demo</a></p>
+                </div>
+                <div id="demo">
+                    <h2>HTML</h2>
+                    <code style="padding:0">
+                        <pre>
+&lt;ol id=&quot;tracklist&quot; class=&quot;sap-playlist&quot; style=&quot;display:none&quot;&gt;
+    &lt;li&gt;
+        &lt;span class=&quot;sap-playlist-track-title&quot;&gt;Gentle Pianos and Other Things&lt;/span&gt;
+        &lt;audio class=&quot;sap-playlist-track-audio&quot; src=&quot;ogg/gentlep.ogg&quot;&gt;
+        &lt;/audio&gt;
+        &lt;div class=&quot;sap-playlist-track-frame&quot;&gt;
+            &lt;h3&gt;Learn More About This Track&lt;/h3&gt;
+            &lt;p&gt;This track was created for SAP-js, there is literally nothing more to it than that.&lt;/p&gt;
+        &lt;/div&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+        &lt;span class=&quot;sap-playlist-track-title&quot;&gt;Lots of Bass&lt;/span&gt;
+        &lt;audio class=&quot;sap-playlist-track-audio&quot; src=&quot;ogg/lotsobass.ogg&quot;&gt;
+        &lt;/audio&gt;
+        &lt;div class=&quot;sap-playlist-track-frame&quot;&gt;
+            &lt;h3&gt;Learn More About This Track&lt;/h3&gt;
+            &lt;p&gt;This track was created for SAP-js, there is literally nothing more to it than that.&lt;/p&gt;
+        &lt;/div&gt;
+    &lt;/li&gt;
+    &lt;li&gt;
+        &lt;span class=&quot;sap-playlist-track-title&quot;&gt;The End&lt;/span&gt;
+        &lt;audio class=&quot;sap-playlist-track-audio&quot; src=&quot;ogg/end.ogg&quot;&gt;
+        &lt;/audio&gt;
+    &lt;/li&gt;
+&lt;/ol&gt;
+                        </pre>
+                    </code>
+
+                    <h2>Javascript</h2>
+                    <code style="padding:0">$(".player-box").saplayer("#tracklist");</code>
+
+                    <h2>Result</h2>
+                    <ol id="tracklist" class="sap-playlist" style="display:none">
+                        <li>
+                            <span class="sap-playlist-track-title">Gentle Pianos and Other Things</span>
+                            <audio class="sap-playlist-track-audio" src="ogg/gentlep.ogg">
+                            </audio>
+                            <div class="sap-playlist-track-frame">
+                                <h3>Learn More About This Track</h3>
+                                <p>This track was created for SAP-js, there is literally nothing more to it than that.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="sap-playlist-track-title">Lots of Bass</span>
+                            <audio class="sap-playlist-track-audio" src="ogg/lotsobass.ogg">
+                            </audio>
+                            <div class="sap-playlist-track-frame">
+                                <h3>Learn More About This Track</h3>
+                                <p>This track was created for SAP-js, there is literally nothing more to it than that.</p>
+                            </div>
+                        </li>
+                        <li>
+                            <span class="sap-playlist-track-title">The End</span>
+                            <audio class="sap-playlist-track-audio" src="ogg/end.ogg">
+                            </audio>
+                        </li>
+                    </ol>
+                    <div class="col-md-4">
+                        <div class="player-box" style="margin-bottom: 1em;">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
         <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.3.min.js"><\/script>')</script>
+        <script src="js/vendor/bootstrap.min.js"></script>
+        <script src="js/vendor/superaudioplayer.min.js"></script>
+
+        <script>
+            $(".player-box").saplayer("#tracklist");
+        </script>
     </body>
 </html>

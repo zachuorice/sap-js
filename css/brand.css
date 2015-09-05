@@ -1,0 +1,15 @@
+
+.brand-color-primary {
+    background: #FFCB22;
+    color: #0272DF;
+}
+
+.brand-color-secondary {
+    background: white;
+    color: black;
+}
+
+.brand-color-auxiliary {
+    background: #0272DF;
+    color: #FFCB22;
+}
