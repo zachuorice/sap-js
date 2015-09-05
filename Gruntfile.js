@@ -11,6 +11,13 @@ module.exports = function(grunt) {
 				dest: 'build/<%= pkg.name %>.min.js' 
 			}
 		},
+        cssmin: {
+            target: {
+                files: {
+                    'build/<%= pkg.name %>.min.css':['src/<%= pkg.name %>.css']
+                }
+            }
+        },
 		qunit: {
 			all: ['test/*.html', 'test/**/*.html']
 		}
@@ -19,5 +26,6 @@ module.exports = function(grunt) {
 	// Load task libraries and register default task.
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-qunit');
-	grunt.registerTask('default', ['uglify']);
+    grunt.loadNpmTasks('grunt-contrib-cssmin');
+	grunt.registerTask('default', ['uglify', 'cssmin']);
 }

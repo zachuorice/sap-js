@@ -1,6 +1,6 @@
 {
   "name": "superaudioplayer",
-  "version": "1.0",
+  "version": "1.1.0",
   "description": "A jquery plugin for creating interactive HTML5 audio players.",
   "license": "MIT",
   "author": "Zachary Richey <zr.public@gmail.com>",
@@ -12,6 +12,7 @@
   "devDependencies": {
     "grunt": "^0.4.5",
     "grunt-cli": "^0.1.13",
+    "grunt-contrib-cssmin": "^0.13.0",
     "grunt-contrib-qunit": "^0.7.0",
     "grunt-contrib-uglify": "^0.9.1",
     "jquery": "^2.1.4",
