@@ -335,9 +335,12 @@ var saplayer = (function() {
                     playlist.play(index);
                 });
 
+                side_pane.append($("<div class='details'>"));
+                var details = side_pane.find(".details");
+
                 playlist.stateWatcher(track_list, function(evt, stateChange) {
                     root.find("li").removeClass("sap-playing");
-                    side_pane.html("");
+                    details.html("");
                     if(playlist.activeTrack) {
                         var currentTrackIndex = playlist.currentTrackIndex();
                         track_list.find("li").each(function(index) {
@@ -347,7 +350,7 @@ var saplayer = (function() {
                         });
 
                         if(playlist.activeTrack.data.extra) {
-                            side_pane.html(playlist.activeTrack.data.extra);
+                            details.html(playlist.activeTrack.data.extra);
                         }
                     }
                 }, ["play", "ended", "abort"]);
