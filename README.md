@@ -37,3 +37,4 @@ Project website done.
 
 ### v3
 * Support for annotations on tracks by timestamp
+* More responsive and useful scrubber bar
