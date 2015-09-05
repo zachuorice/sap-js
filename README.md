@@ -19,7 +19,7 @@ Also not well-tested, so probably buggy on some browsers.
 ### Release 1.1.0
 Improved styling, layout, and behaviour along with some small bug fixes.
 
-### Releas 2.0.0
+### Release 2.0.0
 Project website done.
 
 ## TODO/Reminders
