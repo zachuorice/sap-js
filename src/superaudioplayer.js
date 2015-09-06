@@ -38,21 +38,17 @@ var saplayer = (function() {
         this.changeTrack = function(index) {
             var track = this.tracks[index];
             if(track) {
-                this.stop();
+                this.reset();
                 this.activeTrack = track;
-                this.activeTrack.audio.load();
-                this.play();
+                $(this.activeTrack.audio).trigger("trackChange");
                 return true;
             }
             return false;
         }
 
+        // Start playback of current track, or first track if no track selected.
         this.play = function() {
-            var trackIndex = 0;
-            if(arguments.length > 0) {
-                trackIndex = arguments[0];
-            }
-            if(this.activeTrack || this.changeTrack(trackIndex)) {
+            if(this.activeTrack || this.changeTrack(0)) {
                 if(this.activeTrack) {
                     this.activeTrack.audio.play();
                     return true;
@@ -90,6 +86,7 @@ var saplayer = (function() {
             }
         }
 
+        // Pause playback.
         this.pause = function() {
             if(this.activeTrack) {
                 this.activeTrack.audio.pause();
@@ -98,10 +95,23 @@ var saplayer = (function() {
             return false;
         }
 
+        // Reset the active track to the start and pause it.
+        this.reset = function() {
+            if(this.activeTrack) {
+                this.pause();
+                this.activeTrack.audio.currentTime = 0;
+                return true;
+            }
+            return false;
+        }
+
+        // Stop playback and clear the active track.
         this.stop = function() {
             if(this.activeTrack) {
-                this.activeTrack.audio.load();
+                this.reset();
+                var old_audio = this.activeTrack.audio;
                 this.activeTrack = false;
+                $(old_audio).trigger("stop");
                 return true;
             }
             return false;
@@ -165,7 +175,7 @@ var saplayer = (function() {
             }
 
             if(events === undefined) {
-                events = ["play", "pause", "ended", "abort"];
+                events = ["play", "pause", "ended", "stop"];
             }
 
             $(this.tracks).each(function(index) {
@@ -228,12 +238,12 @@ var saplayer = (function() {
                         $(root).find("button.sap-pause").prop("disabled", false);
                         $(root).find("button.sap-stop").prop("disabled", false);
                     }
-                    else if(stateChange == "pause" || stateChange == "abort" || 
+                    else if(stateChange == "pause" || stateChange == "stop" || 
                             stateChange == "ended" || stateChange == "initial") {
                         $(root).find("button.sap-pause").prop("disabled", true);
                         $(root).find("button.sap-play").prop("disabled", false);
                     }
-                    if (stateChange == "abort" || stateChange == "ended" || 
+                    if (stateChange == "stop" || stateChange == "ended" || 
                         stateChange == "initial") {
                         $(root).find("button.sap-stop").prop("disabled", true);
                     }
@@ -241,6 +251,7 @@ var saplayer = (function() {
                     // Move to the next track (if any) when playback ends.
                     if(stateChange == "ended") {
                         playlist.nextTrack();
+                        playlist.play();
                     }
 
                     if(!playlist.hasNextTrack()) {
@@ -280,11 +291,13 @@ var saplayer = (function() {
             {
                 console.debug("next");
                 playlist.nextTrack();
+                playlist.play();
             },
             prev:function() 
             {
                 console.debug("prev");
                 playlist.previousTrack();
+                playlist.play();
             }
         };
 
@@ -302,7 +315,7 @@ var saplayer = (function() {
                     var timePassed = playlist.currentTime();
                     root.find(".sap-audio-scrubber-current").css("transform", 
                         "scaleX(" + timePassed.toString() + ")");
-                }, ["play", "pause", "ended", "abort", "durationchange", "timeupdate"]);
+                }, ["play", "pause", "ended", "stop", "durationchange", "timeupdate"]);
 
                 root.click(function(evt) {
                     console.debug("click: " + evt.offsetX + ',' + evt.offsetY);
@@ -331,16 +344,22 @@ var saplayer = (function() {
                 track_list.on("click", "li", function(evt) {
                     console.debug("click");
                     var index = $(evt.target).data("track-index");
-                    playlist.stop();
-                    playlist.play(index);
+                    playlist.changeTrack(index);
+                    playlist.play();
                 });
 
                 side_pane.append($("<div class='details'>"));
                 var details = side_pane.find(".details");
 
                 playlist.stateWatcher(track_list, function(evt, stateChange) {
-                    root.find("li").removeClass("sap-playing");
-                    details.html("");
+                    if(stateChange == "ended" || stateChange == "stop" || stateChange == "trackChange") {
+                        root.find("li.sap-playing").removeClass("sap-playing");
+                    }
+
+                    if(!playlist.activeTrack || !playlist.activeTrack.data.extra) {
+                        details.hide();
+                    }
+
                     if(playlist.activeTrack) {
                         var currentTrackIndex = playlist.currentTrackIndex();
                         track_list.find("li").each(function(index) {
@@ -351,9 +370,10 @@ var saplayer = (function() {
 
                         if(playlist.activeTrack.data.extra) {
                             details.html(playlist.activeTrack.data.extra);
+                            details.show();
                         }
                     }
-                }, ["play", "ended", "abort"]);
+                }, ["play", "ended", "stop", "trackChange"]);
 
                 $(playlist.tracks).each(function(index) {
                     var list_item = $("<li>").text(this.data.title); 
