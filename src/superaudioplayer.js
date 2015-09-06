@@ -65,7 +65,8 @@ var saplayer = (function() {
         }
 
         this.hasNextTrack = function() {
-            return this.currentTrackIndex() + 1 < this.tracks.length;
+            return this.currentTrackIndex() + 1 < this.tracks.length || 
+                (this.currentTrackIndex() == 0 && !this.activeTrack);
         }
 
         this.hasPreviousTrack = function() {
@@ -74,16 +75,21 @@ var saplayer = (function() {
 
         this.nextTrack = function() {
             if(this.hasNextTrack()) {
+                if(this.currentTrackIndex() == 0 && !this.activeTrack) {
+                    return this.changeTrack(0);
+                }
                 var nextTrackIndex = this.currentTrackIndex() + 1;
                 this.changeTrack(nextTrackIndex);
             }
+            return false;
         }
 
         this.previousTrack = function() {
             if(this.hasPreviousTrack()) {
                 var previousTrackIndex = this.currentTrackIndex() - 1;
-                this.changeTrack(previousTrackIndex);
+                return this.changeTrack(previousTrackIndex);
             }
+            return false;
         }
 
         // Pause playback.
@@ -290,14 +296,20 @@ var saplayer = (function() {
             next:function() 
             {
                 console.debug("next");
+                var wasPlaying = playlist.isPlaying() || !this.activeTrack;
                 playlist.nextTrack();
-                playlist.play();
+                if(wasPlaying) {
+                    playlist.play();
+                }
             },
             prev:function() 
             {
                 console.debug("prev");
+                var wasPlaying = playlist.isPlaying();
                 playlist.previousTrack();
-                playlist.play();
+                if(wasPlaying) {
+                    playlist.play();
+                }
             }
         };
 
