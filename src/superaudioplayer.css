@@ -73,12 +73,8 @@ button.sap-control:hover[disabled]
 /* SAP audio scrubber CSS */
 div.sap-audio-scrubber-chrome {
     width: 100%;
-    height: 4px;
+    height: 8px;
     position: relative;
-}
-
-div.sap-audio-scrubber-chrome:hover {
-    transform: scaleY(2.00);
 }
 
 div.sap-audio-scrubber-chrome > div.sap-audio-scrubber {

@@ -249,15 +249,15 @@ var saplayer = (function() {
                         $(root).find("button.sap-pause").prop("disabled", true);
                         $(root).find("button.sap-play").prop("disabled", false);
                     }
-                    if (stateChange == "stop" || stateChange == "ended" || 
-                        stateChange == "initial") {
+                    if (stateChange == "stop" || stateChange == "initial") {
                         $(root).find("button.sap-stop").prop("disabled", true);
                     }
 
                     // Move to the next track (if any) when playback ends.
                     if(stateChange == "ended") {
-                        playlist.nextTrack();
-                        playlist.play();
+                        if(playlist.nextTrack()) {
+                            playlist.play();
+                        }
                     }
 
                     if(!playlist.hasNextTrack()) {
@@ -323,10 +323,11 @@ var saplayer = (function() {
                 var root = $($.parseHTML('<div class="sap-audio-scrubber-chrome">' + 
                             '<div class="sap-audio-scrubber sap-audio-scrubber-current"></div>' + 
                             '<div class="sap-audio-scrubber sap-audio-scrubber-total"></div></div>'));
+
                 playlist.stateWatcher(root, function(evt, stateChange) {
-                    var timePassed = playlist.currentTime();
+                    var newScale = playlist.currentTime()
                     root.find(".sap-audio-scrubber-current").css("transform", 
-                        "scaleX(" + timePassed.toString() + ")");
+                        "scaleX(" + newScale.toString() + ")");
                 }, ["play", "pause", "ended", "stop", "durationchange", "timeupdate"]);
 
                 root.click(function(evt) {
@@ -335,7 +336,7 @@ var saplayer = (function() {
                     if(!playlist.isPlaying()) {
                         playlist.play();
                     }
-                    var newTime = Math.floor(seekRatio * playlist.trackLength());
+                    var newTime = seekRatio * playlist.trackLength();
                     playlist.seek(newTime);
                 });
 
