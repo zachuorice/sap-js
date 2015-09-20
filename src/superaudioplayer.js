@@ -367,7 +367,7 @@ var saplayer = (function() {
                     startTimer();
                 }, ["play"]);
 
-                root.click(function(evt) {
+                hoverbox.click(function(evt) {
                     console.debug("click: " + evt.offsetX + ',' + evt.offsetY);
                     var seekRatio = evt.offsetX / root.width();
                     if(!playlist.isPlaying()) {

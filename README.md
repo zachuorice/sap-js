@@ -36,6 +36,7 @@ Project website done.
 * Project website (and example, if possible) [DONE]
 
 ### v3
+* Volume slider
 * Support for annotations on tracks by timestamp
 * More responsive and useful scrubber bar [DONE]
-* Volume slider
+* Make scrubber bar more usable on touchscreens
