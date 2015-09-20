@@ -322,13 +322,50 @@ var saplayer = (function() {
             scrubberView = function(playlist) {
                 var root = $($.parseHTML('<div class="sap-audio-scrubber-chrome">' + 
                             '<div class="sap-audio-scrubber sap-audio-scrubber-current"></div>' + 
-                            '<div class="sap-audio-scrubber sap-audio-scrubber-total"></div></div>'));
+                            '<div class="sap-audio-scrubber sap-audio-scrubber-total"></div>' + 
+                            '<div class="sap-audio-scrubber sap-audio-scrubber-hoverbox"></div></div>'));
 
-                playlist.stateWatcher(root, function(evt, stateChange) {
-                    var newScale = playlist.currentTime()
+                // The hoverbox receives all mouse events, this ensures that the mouse 
+                // position will not change based on what element is currently hovered.
+                // Without this the current bar could receive mouse events and throw things off.
+                var hoverbox = root.find(".sap-audio-scrubber-hoverbox");
+                hoverbox.css({zIndex:3});
+
+                var mouseOverScrubber = false;
+                var mouseOverSeekRatio = 0;
+
+                var updateScrubber = function()
+                {
+                    var newScale;
+                    if(mouseOverScrubber)
+                    {
+                        newScale = mouseOverSeekRatio;
+                    }
+                    else
+                    {
+                        newScale = playlist.currentTime()
+                    }
                     root.find(".sap-audio-scrubber-current").css("transform", 
                         "scaleX(" + newScale.toString() + ")");
-                }, ["play", "pause", "ended", "stop", "durationchange", "timeupdate"]);
+                }
+
+                var startTimer = function()
+                {
+                    var timeout = 200;
+                    updateScrubber();
+                    if(playlist.isPlaying() || mouseOverScrubber)
+                    {
+                        if(mouseOverScrubber)
+                        {
+                            timeout = 30;
+                        }
+                        window.setTimeout(startTimer, timeout);
+                    }
+                };
+
+                playlist.stateWatcher(root, function(evt, stateChange) {
+                    startTimer();
+                }, ["play"]);
 
                 root.click(function(evt) {
                     console.debug("click: " + evt.offsetX + ',' + evt.offsetY);
@@ -338,6 +375,23 @@ var saplayer = (function() {
                     }
                     var newTime = seekRatio * playlist.trackLength();
                     playlist.seek(newTime);
+                });
+
+                hoverbox.mouseenter(function(evt)
+                {
+                    mouseOverScrubber = true;
+                    hoverbox.on("mousemove", function(evt)
+                    {
+                        console.debug(evt.offsetX);
+                        mouseOverSeekRatio = evt.offsetX / root.width();
+                    });
+                    startTimer();
+                });
+
+                hoverbox.mouseleave(function(evt)
+                {
+                    mouseOverScrubber = false;
+                    hoverbox.off("mousemove");
                 });
 
                 root.trigger("statechange", "ended");
