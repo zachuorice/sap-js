@@ -33,6 +33,8 @@ var saplayer = (function() {
 	var Playlist = function(tracks) {
 		this.tracks = tracks;
         this.activeTrack = false;
+        this.volume = 1;
+        this.muted = false;
 
         // Change the active track to a new one by index.
         this.changeTrack = function(index) {
@@ -40,6 +42,7 @@ var saplayer = (function() {
             if(track) {
                 this.reset();
                 this.activeTrack = track;
+                this.syncVolume();
                 $(this.activeTrack.audio).trigger("trackChange");
                 return true;
             }
@@ -121,6 +124,43 @@ var saplayer = (function() {
                 return true;
             }
             return false;
+        }
+
+        this.syncVolume = function() {
+            // This is kind of hacky, but to ensure the volumechange event does
+            // fire we need to change the volume of some track. So, if no track
+            // is currently active we'll just use the first one.
+            var track = this.activeTrack;
+            if(!track) {
+                track = this.tracks[0];
+            }
+
+            track.audio.volume = this.volume;
+            track.audio.muted = this.muted;
+            return true;
+        }
+
+        this.setVolume = function(newVolume) {
+            this.volume = newVolume;
+            if(this.muted) {
+                this.muted = false;
+            }
+            this.syncVolume();
+            return true;
+        }
+
+        this.getVolume = function() {
+            return this.volume;
+        }
+
+        this.toggleMute = function() {
+            this.muted = !this.muted;
+            this.syncVolume();
+            return true;
+        }
+
+        this.isMuted = function() {
+            return this.muted;
         }
 
         this.isPlaying = function() {
@@ -220,14 +260,14 @@ var saplayer = (function() {
     // controls on the player. Values allowed in array: play, pause, stop, next, prev
     var sapPlayer = function(playlist, buttons, buttonView) {
         if(buttons === undefined) {
-            buttons = ["play", "pause", "stop", "prev", "next"];
+            buttons = ["play", "pause", "stop", "prev", "next", "volume"];
         }
 
         if(buttonView === undefined) {
             buttonView = function(playlist, buttons, events) {
-                var root = $($.parseHTML('<div class="sap-controls"></div>')[0]);
+                var root = $($.parseHTML('<div class="sap-controls-chrome"></div>')[0]);
                 var buttonToIcon = {play:"fa-play", pause:"fa-pause", stop:"fa-stop", 
-                    next:"fa-step-forward", prev:"fa-step-backward"};
+                    next:"fa-step-forward", prev:"fa-step-backward", volume:"fa-volume-up"};
                 $.each(buttons, function(index) {
                     var button = $($.parseHTML('<button type="button" class="sap-control sap-' 
                             + this + '"><i class="fa ' + 
@@ -239,6 +279,7 @@ var saplayer = (function() {
                 playlist.stateWatcher(root, function(evt, stateChange) {
                     console.debug("statechange: " + stateChange);
 
+                    // Update buttons for new state.
                     if(stateChange == "play") {
                         $(root).find("button.sap-play").prop("disabled", true);
                         $(root).find("button.sap-pause").prop("disabled", false);
@@ -260,6 +301,7 @@ var saplayer = (function() {
                         }
                     }
 
+                    // Update next and previous buttons.
                     if(!playlist.hasNextTrack()) {
                         $(root).find("button.sap-next").prop("disabled", true);
                     } else {
@@ -271,8 +313,28 @@ var saplayer = (function() {
                     } else {
                         $(root).find("button.sap-prev").prop("disabled", false);
                     }
-                });
+
+                    // Update volume button.
+                    var volumeIcon = $(root).find("button.sap-volume > i.fa");
+                    if(playlist.getVolume() == 0 || playlist.isMuted()) {
+                        volumeIcon.toggleClass("fa-volume-up", false);
+                        volumeIcon.toggleClass("fa-volume-down", false);
+                        volumeIcon.toggleClass("fa-volume-off", true);
+                    }
+                    else if(playlist.getVolume() <= 0.25) {
+                        volumeIcon.toggleClass("fa-volume-up", false);
+                        volumeIcon.toggleClass("fa-volume-down", true);
+                        volumeIcon.toggleClass("fa-volume-off", false);
+                    }
+                    else {
+                        volumeIcon.toggleClass("fa-volume-up", true);
+                        volumeIcon.toggleClass("fa-volume-down", false);
+                        volumeIcon.toggleClass("fa-volume-off", false);
+                    }
+                }, ["play", "pause", "stop", "ended", "volumechange", "initial"]);
+
                 $(root).trigger("statechange", "initial");
+
                 return root;
             }
         }
@@ -310,6 +372,10 @@ var saplayer = (function() {
                 if(wasPlaying) {
                     playlist.play();
                 }
+            },
+            volume:function()
+            {
+                playlist.toggleMute();
             }
         };
 
@@ -368,7 +434,6 @@ var saplayer = (function() {
                 }, ["play"]);
 
                 hoverbox.click(function(evt) {
-                    console.debug("click: " + evt.offsetX + ',' + evt.offsetY);
                     var seekRatio = evt.offsetX / root.width();
                     if(!playlist.isPlaying()) {
                         playlist.play();
@@ -382,7 +447,6 @@ var saplayer = (function() {
                     mouseOverScrubber = true;
                     hoverbox.on("mousemove", function(evt)
                     {
-                        console.debug(evt.offsetX);
                         mouseOverSeekRatio = evt.offsetX / root.width();
                     });
                     startTimer();
@@ -405,7 +469,7 @@ var saplayer = (function() {
     var sapTrackList = function(playlist, trackListView) {
         if(trackListView === undefined) {
             trackListView = function(playlist) {
-                var root = $($.parseHTML('<div></div>'));
+                var root = $($.parseHTML('<div class="sap-track-list-chrome"></div>'));
                 var track_list = $($.parseHTML('<ol class="sap-track-list"></ol>'));
                 var side_pane = $($.parseHTML('<div class="sap-track-list-details-pane"></div>'));
                 track_list.on("click", "li", function(evt) {
@@ -460,7 +524,7 @@ var saplayer = (function() {
 		makePlaylistFromDOM:makePlaylistFromDOM,
         sapPlayer:sapPlayer,
         sapScrubber:sapScrubber,
-        sapTrackList:sapTrackList
+        sapTrackList:sapTrackList,
 	};
 })();
 

@@ -15,9 +15,9 @@ QUnit.test("SAP Player Tests", function(assert) {
     var t2_dom_list = saplayer.sapTrackList(t2);
     var t3_dom_list = saplayer.sapTrackList(t3);
 
-    assert.ok(t1_dom.hasClass("sap-controls"), "Returned object should have class 'sap-controls'");
-    assert.ok(t2_dom.hasClass("sap-controls"), "Returned object should have class 'sap-controls'");
-    assert.ok(t3_dom.hasClass("sap-controls"), "Returned object should have class 'sap-controls'");
+    assert.ok(t1_dom.hasClass("sap-controls-chrome"), "Returned object should have class 'sap-controls-chrome'");
+    assert.ok(t2_dom.hasClass("sap-controls-chrome"), "Returned object should have class 'sap-controls-chrome'");
+    assert.ok(t3_dom.hasClass("sap-controls-chrome"), "Returned object should have class 'sap-controls-chrome'");
 
     assert.ok(t1_dom.find(".sap-play,.sap-pause,.sap-stop,.sap-next,.sap-prev").length == 5, 
         "t1: All five controls should be present");
